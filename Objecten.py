@@ -11,4 +11,3 @@ class Robot:
         zelf.x += zelf.snelheid_x
         zelf.y += zelf.snelheid_y
 
-Robot()
