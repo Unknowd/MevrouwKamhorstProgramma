@@ -13,14 +13,21 @@ class Robot:
         Robot.id += 1
         zelf.id = Robot.id
     # simpele beweging
-    def beweeg(zelf, richting=""):
-        if "R" in list(richting):
-            zelf.snelheid_x += snelheidsverandering
-        if "L" in list(richting):
-            zelf.snelheid_x -= snelheidsverandering
-        if "O" in list(richting):
-            zelf.snelheid_y += snelheidsverandering
-        if "N" in list(richting):
-            zelf.snelheid_y -= snelheidsverandering
+    def beweeg(zelf, richting=0):
+        if richting & 1 == 1:
+            zelf.snelheid_x += snelheidsverandering_x
+        if richting & 2 == 2:
+            zelf.snelheid_x -= snelheidsverandering_x
+        if richting & 4 == 4:
+            zelf.snelheid_y += snelheidsverandering_y
+        if richting & 8 == 8:
+            zelf.snelheid_y -= snelheidsverandering_y
         zelf.x += zelf.snelheid_x
         zelf.y += zelf.snelheid_y
+        
+def main():
+    pass
+
+if __name__== "main":
+    main()
+
