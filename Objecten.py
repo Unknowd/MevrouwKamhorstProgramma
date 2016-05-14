@@ -7,13 +7,7 @@ class Robot:
        zelf.grootte_x = grootte_x
        zelf.grootte_y = grootte_y
     # simpele beweging
-    def beweeg(zelf, richting=""):
-        if "R" in list(richting):
-            zelf.x += zelf.snelheid_x
-        if "L" in list(richting):
-            zelf.x -= zelf.snelheid_x
-        if "O" in list(richting):
-            zelf.y += zelf.snelheid_y
-        if "N" in list(richting):
-            zelf.y += zelf.snelheid_y
+    def beweeg(zelf):
+        zelf.x += zelf.snelheid_x
+        zelf.y += zelf.snelheid_y
 
