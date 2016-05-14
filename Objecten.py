@@ -1,6 +1,7 @@
 class Robot:
     id = 0
     kracht = 2500
+    kleuren = ["white", "black", "red", "green", "blue", "cyan", "yellow", "magenta"]
     def __init__(zelf, x=0, y=0, snelheid_x=5, snelheid_y=5, grootte_x=50, grootte_y=50, kleur="black"):
         zelf.x = x
         zelf.y = y
@@ -10,6 +11,8 @@ class Robot:
         zelf.grootte_y = grootte_y
         zelf.snelheidsverandering = Robot.kracht / (zelf.grootte_x * zelf.grootte_y)
         zelf.kleur = kleur
+        if zelf.kleur not in Robot.kleuren:
+            zelf.kleur = "black"
         Robot.id += 1
         zelf.id = Robot.id
     # simpele beweging
@@ -24,6 +27,13 @@ class Robot:
             zelf.snelheid_y -= snelheidsverandering_y
         zelf.x += zelf.snelheid_x
         zelf.y += zelf.snelheid_y
+
+class Speler():
+    def __init__(zelf, robotid):
+        for robot in robots:
+            if robot.id == robotid:
+                zelf.__class__ = Robot
+                zelf.__dict__ = robot.__dict__
         
 def main():
     pass
@@ -31,3 +41,4 @@ def main():
 if __name__== "main":
     main()
 
+robots = []
