@@ -1,3 +1,4 @@
+import tkinter
 class Robot:
     id = 0
     kracht = 2500
@@ -25,9 +26,30 @@ class Robot:
         zelf.x += zelf.snelheid_x
         zelf.y += zelf.snelheid_y
         
-def main():
-    pass
+class Doek(tkinter.Canvas):
+    def __init__(zelf, ouder, **kwargs):
+        tkinter.Canvas.__init__(zelf, ouder, **kwargs)
+        zelf.bind("<Configure>", zelf.bij_hergroting)
+        zelf.hoogte = zelf.winfo_reqheight()
+        zelf.breedte = zelf.winfo_reqwidth()
 
-if __name__== "main":
+    def bij_hergroting(zelf,event):
+        zelf.breedte = event.width
+        zelf.hoogte = event.height
+        zelf.config(width=zelf.breedte, height=zelf.hoogte)
+        
+class Raam:
+    def __init__(zelf):
+        zelf.scherm = tkinter.Tk()
+        zelf.beeld = tkinter.Frame(zelf.scherm)
+        zelf.beeld.pack(fill=tkinter.BOTH, expand=tkinter.YES)
+        zelf.doek = Doek(zelf.beeld, width=800, height=800, bg="white", highlightthickness=0)
+        zelf.doek.pack(fill=tkinter.BOTH, expand=tkinter.YES)
+        zelf.scherm.mainloop()
+        
+def main():
+    mijn_raam = Raam()
+
+if __name__== "__main__":
     main()
 
