@@ -51,9 +51,7 @@ class Doek(tkinter.Canvas):
 class Raam:
     def __init__(zelf):
         zelf.scherm = tkinter.Tk()
-        zelf.beeld = tkinter.Frame(zelf.scherm)
-        zelf.beeld.pack(fill=tkinter.BOTH, expand=tkinter.YES)
-        zelf.doek = Doek(zelf.beeld, width=800, height=800, bg="white", highlightthickness=0, border=0)
+        zelf.doek = Doek(zelf.scherm, width=800, height=800, bg="white", highlightthickness=0, border=0)
         zelf.doek.pack(fill=tkinter.BOTH, expand=tkinter.YES)
         zelf.scherm.mainloop()
         
