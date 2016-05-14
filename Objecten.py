@@ -1,4 +1,5 @@
 class Robot:
+    
     snelheidsverandering_x = 1
     snelheidsverandering_y = 1
     def __init__(zelf, x=0, y=0, snelheid_x=5, snelheid_y=5, grootte_x=50, grootte_y=50):
