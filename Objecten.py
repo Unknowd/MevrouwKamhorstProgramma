@@ -9,16 +9,20 @@ class Robot:
        zelf.grootte_x = grootte_x
        zelf.grootte_y = grootte_y
     # simpele beweging
-    def beweeg(zelf, richting=""):
-        if "R" in list(richting):
+    def beweeg(zelf, richting=0):
+        if richting & 1 == 1:
             zelf.snelheid_x += snelheidsverandering_x
-        if "L" in list(richting):
+        if richting & 2 == 2:
             zelf.snelheid_x -= snelheidsverandering_x
-        if "O" in list(richting):
+        if richting & 4 == 4:
             zelf.snelheid_y += snelheidsverandering_y
-        if "N" in list(richting):
+        if richting & 8 == 8:
             zelf.snelheid_y -= snelheidsverandering_y
         zelf.x += zelf.snelheid_x
         zelf.y += zelf.snelheid_y
+        
+def main():
+    pass
 
-
+if __name__== "main":
+    main()
