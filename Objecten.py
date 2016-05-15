@@ -30,7 +30,7 @@ class Robot:
         zelf.y += zelf.snelheid_y
 
 class Speler():
-    def __init__(zelf, robotid):
+    def __init__(zelf, robotid, robots):
         for robot in robots:
             if robot.id == robotid:
                 zelf.__class__ = Robot
@@ -47,18 +47,22 @@ class Doek(tkinter.Canvas):
         zelf.breedte = event.width
         zelf.hoogte = event.height
         zelf.config(width=zelf.breedte, height=zelf.hoogte)
+
+    def update(zelf, objecten):
+        zelf.delete('all')
+        for i in objecten:
+            i.teken(zelf)
+            
         
 class Raam:
     def __init__(zelf):
         zelf.scherm = tkinter.Tk()
         zelf.doek = Doek(zelf.scherm, width=800, height=800, bg="white", highlightthickness=0, border=0)
         zelf.doek.pack(fill=tkinter.BOTH, expand=tkinter.YES)
-        zelf.scherm.mainloop()
+        zelf.robots = []
         
 def main():
     mijn_raam = Raam()
 
 if __name__== "__main__":
     main()
-
-robots = []
