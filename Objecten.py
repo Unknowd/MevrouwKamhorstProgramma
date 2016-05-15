@@ -62,7 +62,13 @@ class Doek(tkinter.Canvas):
         robot.x -= x
         robot.y -= y
         return abs(robot.x) > 4 * zelf.breedte or abs(robot.y) > 4 * zelf.hoogte
-            
+
+    def vind_robot(zelf, robots, x, y):
+        for robot in robots:
+            if robot.x <= x and robot.y <= y and robot.x + robot.grootte_x >= x and robot.y + robot.grootte_y >= y:
+                print("happend")
+                return robot
+        return False
             
 class Raam:
     def __init__(zelf):
@@ -77,11 +83,17 @@ class Raam:
         zelf.teken()
 
     def _set_bindings(zelf):
+        zelf.scherm.bind("<Button-1>", zelf._click)
         for char in ["w", 'a', 's', 'd']:
             zelf.scherm.bind("<KeyPress-%s>" % char, zelf._pressed)
             zelf.scherm.bind("<KeyRelease-%s>" % char, zelf._released)
             zelf.pressed[char] = False
-
+            
+    def _click(zelf, event):
+        robot = zelf.doek.vind_robot(zelf.robots, event.x, event.y)
+        if robot:
+            zelf.speler = Speler(robot)
+                
     def _pressed(zelf, event):
         zelf.pressed[event.char] = True
 
@@ -89,7 +101,7 @@ class Raam:
         zelf.pressed[event.char] = False
 
     def hergroepeer(zelf):
-        x, y = zelf.speler.x, zelf.speler.y
+        x, y = zelf.speler.x - zelf.doek.breedte//2 + zelf.speler.grootte_x//2, zelf.speler.y - zelf.doek.hoogte//2 - zelf.speler.grootte_y//2
         zelf.robots = [robot for robot in zelf.robots if not zelf.doek.far_away(robot, x, y)]
         
     def teken(zelf):
@@ -100,7 +112,6 @@ class Raam:
             i.beweeg()
         zelf.doek.ververs(zelf.robots, x, y)
         zelf.hergroepeer()
-        print(zelf.robots)
         zelf.scherm.after(20, zelf.teken)
 
 def main():
