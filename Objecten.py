@@ -86,9 +86,10 @@ class Raam:
 
     def teken(zelf, doek):
         zelf.doek.delete("all")
-        ijkpunt = [speler.x + (speler.grootte_x / 2), speler.y - (speler.grootte_y / 2)]
         for robot in robots:
             robot.beweeg(zelf)
+        ijkpunt = [speler.x + (speler.grootte_x / 2), speler.y - (speler.grootte_y / 2)]
+        for robot in robots:
             robot.teken(doek, ijkpunt)
         zelf.doek.after(20, zelf.teken, doek)
 
