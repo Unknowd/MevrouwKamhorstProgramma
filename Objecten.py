@@ -57,6 +57,12 @@ class Doek(tkinter.Canvas):
         y -= zelf.hoogte//2
         for i in objecten:
             i.teken(zelf, x, y)
+
+    def far_away(zelf, robot, x, y):
+        robot.x -= x
+        robot.y -= y
+        return abs(robot.x) > 4 * zelf.breedte or abs(robot.y) > 4 * zelf.hoogte
+            
             
 class Raam:
     def __init__(zelf):
@@ -82,6 +88,10 @@ class Raam:
     def _released(zelf, event):
         zelf.pressed[event.char] = False
 
+    def hergroepeer(zelf):
+        x, y = zelf.speler.x, zelf.speler.y
+        zelf.robots = [robot for robot in zelf.robots if not zelf.doek.far_away(robot, x, y)]
+        
     def teken(zelf):
         s = zelf.speler
         x, y = s.x + (s.grootte_x // 2), s.y - (s.grootte_y // 2)
@@ -89,6 +99,8 @@ class Raam:
         for i in zelf.robots:
             i.beweeg()
         zelf.doek.ververs(zelf.robots, x, y)
+        zelf.hergroepeer()
+        print(zelf.robots)
         zelf.scherm.after(20, zelf.teken)
 
 def main():
