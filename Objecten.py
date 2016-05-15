@@ -4,7 +4,7 @@ class Robot:
     id = 0
     kracht = 2500
     kleuren = ["white", "black", "red", "green", "blue", "cyan", "yellow", "magenta"]
-    def __init__(zelf, x=0, y=0, kleur="black", grootte_x=50, grootte_y=50, snelheid_x=0, snelheid_y=0):
+    def __init__(zelf, x=0, y=0, kleur="black", snelheid_x=5, snelheid_y=5, grootte_x=50, grootte_y=50):
         zelf.x = x
         zelf.y = y
         zelf.snelheid_x = snelheid_x
@@ -18,22 +18,27 @@ class Robot:
         Robot.id += 1
         zelf.id = Robot.id
     # simpele beweging
-    def beweeg(zelf, raam):
-        global speler
-        if raam.pressed["d"]:
-            zelf.snelheid_x += zelf.snelheidsverandering
-        if raam.pressed["a"]:
-            zelf.snelheid_x -= zelf.snelheidsverandering
-        if raam.pressed["s"]:
-            zelf.snelheid_y += zelf.snelheidsverandering
-        if raam.pressed["w"]:
-            zelf.snelheid_y -= zelf.snelheidsverandering
+    def beweeg(zelf):
         zelf.x += zelf.snelheid_x
         zelf.y += zelf.snelheid_y
         
     def teken(zelf, doek, x, y):
         doek.create_rectangle(zelf.x - x, zelf.y - y , zelf.x + zelf.grootte_x - x, zelf.y + zelf.grootte_y - y, fill = zelf.kleur)
-        
+
+class Speler(Robot):
+    def __init__(zelf, robot):
+        zelf.__dict__ = robot.__dict__
+
+    def ververs_snelheid(zelf, l):
+        if l["d"]:
+            zelf.snelheid_x += zelf.snelheidsverandering
+        if l["a"]:
+            zelf.snelheid_x -= zelf.snelheidsverandering
+        if l["s"]:
+            zelf.snelheid_y += zelf.snelheidsverandering
+        if l["w"]:
+            zelf.snelheid_y -= zelf.snelheidsverandering
+
 class Doek(tkinter.Canvas):
     def __init__(zelf, ouder, **kwargs):
         tkinter.Canvas.__init__(zelf, ouder, **kwargs)
@@ -51,7 +56,7 @@ class Doek(tkinter.Canvas):
         x -= zelf.breedte//2
         y -= zelf.hoogte//2
         for i in objecten:
-            i.teken(zelf)
+            i.teken(zelf, x, y)
             
 class Raam:
     def __init__(zelf):
@@ -60,7 +65,8 @@ class Raam:
         zelf.scherm.title("Relativiteitstheorie")
         zelf.doek = Doek(zelf.scherm, width=800, height=800, bg="white", highlightthickness=0, border=0)
         zelf.doek.pack(fill=tkinter.BOTH, expand=tkinter.YES)
-        zelf.robots = []
+        zelf.robots = [Robot(10, 10), Robot(50,50)]
+        zelf.speler = Speler(zelf.robots[0])
         zelf._set_bindings()
         zelf.teken()
 
@@ -77,9 +83,13 @@ class Raam:
         zelf.pressed[event.char] = False
 
     def teken(zelf):
-        x, y = int(speler.x + (speler.grootte_x / 2)), int(speler.y - (speler.grootte_y / 2))
+        s = zelf.speler
+        x, y = s.x + (s.grootte_x // 2), s.y - (s.grootte_y // 2)
+        s.ververs_snelheid(zelf.pressed)
+        for i in zelf.robots:
+            i.beweeg()
         zelf.doek.ververs(zelf.robots, x, y)
-        zelf.after(20, zelf.teken)
+        zelf.scherm.after(20, zelf.teken)
 
 def main():
     mijn_raam = Raam()
