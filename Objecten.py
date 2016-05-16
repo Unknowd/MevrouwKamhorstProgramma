@@ -75,7 +75,6 @@ class Doek(tkinter.Canvas):
     def vind_robot(zelf, robots, x, y):
         for robot in robots:
             if robot.x <= x and robot.y <= y and robot.x + robot.grootte_x >= x and robot.y + robot.grootte_y >= y:
-                print("happend")
                 return robot
         return False
             
@@ -117,10 +116,11 @@ class Raam:
         s = zelf.speler
         x, y = s.x + (s.grootte_x // 2), s.y - (s.grootte_y // 2)
         s.ververs_snelheid(zelf.pressed)
+        zelf.robots.append(Robot(50,50))
         for i in zelf.robots:
             i.beweeg()
-        zelf.doek.ververs(zelf.robots, x, y)
         zelf.hergroepeer()
+        zelf.doek.ververs(zelf.robots, x, y)
         zelf.scherm.after(20, zelf.teken)
 
 def main():
