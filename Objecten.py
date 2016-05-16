@@ -4,7 +4,7 @@ class Robot:
     # statische variable
     id = 0
     kracht = 2500
-    kleuren = ["white", "black", "red", "green", "blue", "cyan", "yellow", "magenta"]
+    kleuren = ["black", "red", "green", "blue", "cyan", "yellow", "magenta"]
 
     def __init__(zelf, x=0, y=0, kleur="black", bkleur="black", ckleur="black", snelheid_x=5, snelheid_y=5, grootte_x=50, grootte_y=50):
         zelf.x = x
