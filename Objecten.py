@@ -1,10 +1,12 @@
 import tkinter, random
 
 class Robot:
+    # statische variable
     id = 0
     kracht = 2500
     kleuren = ["white", "black", "red", "green", "blue", "cyan", "yellow", "magenta"]
-    def __init__(zelf, x=0, y=0, kleur="black", snelheid_x=5, snelheid_y=5, grootte_x=50, grootte_y=50):
+
+    def __init__(zelf, x=0, y=0, kleur="black", bkleur="black", ckleur="black", snelheid_x=5, snelheid_y=5, grootte_x=50, grootte_y=50):
         zelf.x = x
         zelf.y = y
         zelf.snelheid_x = snelheid_x
@@ -15,16 +17,23 @@ class Robot:
         zelf.kleur = kleur
         if zelf.kleur not in Robot.kleuren:
             zelf.kleur = "black"
+        zelf.bkleur = bkleur
+        if zelf.bkleur not in Robot.kleuren:
+            zelf.bkleur = "black"
+        zelf.ckleur = ckleur
+        if zelf.ckleur not in Robot.kleuren:
+            zelf.ckleur = "black"
         Robot.id += 1
         zelf.id = Robot.id
-    # simpele beweging
+ 
     def beweeg(zelf):
         zelf.x += zelf.snelheid_x
         zelf.y += zelf.snelheid_y
         
     def teken(zelf, doek, x, y):
-        doek.create_rectangle(zelf.x - x, zelf.y - y , zelf.x + zelf.grootte_x - x, zelf.y + zelf.grootte_y - y, fill = zelf.kleur)
-
+        doek.create_rectangle(zelf.x - x, zelf.y - y , zelf.x + zelf.grootte_x - x, zelf.y + zelf.grootte_y - y, fill = zelf.kleur, outline = zelf.bkleur, width = zelf.grootte_x//10)
+        doek.create_oval(zelf.x - x, zelf.y - y, zelf.x + zelf.grootte_x - x, zelf.y + zelf.grootte_y - y, fill = zelf.kleur, outline = zelf.ckleur, width = zelf.grootte_x//10)
+        
 class Speler(Robot):
     def __init__(zelf, robot):
         zelf.__dict__ = robot.__dict__
@@ -77,7 +86,7 @@ class Raam:
         zelf.scherm.title("Relativiteitstheorie")
         zelf.doek = Doek(zelf.scherm, width=800, height=800, bg="white", highlightthickness=0, border=0)
         zelf.doek.pack(fill=tkinter.BOTH, expand=tkinter.YES)
-        zelf.robots = [Robot(10, 10), Robot(50,50)]
+        zelf.robots = [Robot(10, 10, kleur = "cyan", bkleur = "green", ckleur = "blue"), Robot(50,50)]
         zelf.speler = Speler(zelf.robots[0])
         zelf._set_bindings()
         zelf.teken()
