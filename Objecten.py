@@ -92,7 +92,7 @@ class Raam:
         zelf.speler = Speler(zelf.robots[0])
         zelf.state = False
         zelf._set_bindings()
-        zelf.teken()
+        zelf.uitvoeren()
 
     def _set_bindings(zelf):
         zelf.scherm.bind("<Button-1>", zelf._click)
@@ -121,7 +121,7 @@ class Raam:
         x, y = zelf.speler.x - zelf.doek.breedte//2 + zelf.speler.grootte_x//2, zelf.speler.y - zelf.doek.hoogte//2 - zelf.speler.grootte_y//2
         zelf.robots = [robot for robot in zelf.robots if not zelf.doek.far_away(robot, x, y)]
         
-    def teken(zelf):
+    def uitvoeren(zelf):
         s = zelf.speler
         x, y = s.x + (s.grootte_x // 2), s.y + (s.grootte_y // 2)
         s.ververs_snelheid(zelf.pressed)
@@ -129,7 +129,7 @@ class Raam:
             i.beweeg()
         zelf.hergroepeer()
         zelf.doek.ververs(zelf.robots, x, y)
-        zelf.scherm.after(20, zelf.teken)
+        zelf.scherm.after(20, zelf.uitvoeren)
 
 def main():
     mijn_raam = Raam()
