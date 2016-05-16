@@ -74,7 +74,7 @@ class Doek(tkinter.Canvas):
 
     def vind_robot(zelf, robots, x, y):
         for robot in robots:
-            if robot.x <= x and robot.y <= y and robot.x + robot.grootte_x >= x and robot.y + robot.grootte_y >= y:
+            if robot.x <= x and robot.y >= y and robot.x + robot.grootte_x >= x and robot.y - robot.grootte_y <= y:
                 return robot
         return False
             
@@ -83,20 +83,29 @@ class Raam:
         zelf.pressed = {}
         zelf.scherm = tkinter.Tk()
         zelf.scherm.title("Relativiteitstheorie")
-        zelf.doek = Doek(zelf.scherm, width=800, height=800, bg="white", highlightthickness=0, border=0)
+        x = zelf.scherm.winfo_screenwidth()//2
+        y = zelf.scherm.winfo_screenheight()//2
+        zelf.scherm.geometry("{0}x{1}+{2}+{3}".format(x, y, x - x//2, y - y//2))
+        zelf.doek = Doek(zelf.scherm, bg="white", highlightthickness=0, border=0)
         zelf.doek.pack(fill=tkinter.BOTH, expand=tkinter.YES)
         zelf.robots = [Robot(10, 10, kleur = "cyan", bkleur = "green", ckleur = "blue"), Robot(50,50)]
         zelf.speler = Speler(zelf.robots[0])
+        zelf.state = False
         zelf._set_bindings()
         zelf.teken()
 
     def _set_bindings(zelf):
         zelf.scherm.bind("<Button-1>", zelf._click)
+        zelf.scherm.bind("<F11>", zelf._toggle_volledigscherm)
         for char in ["w", 'a', 's', 'd']:
             zelf.scherm.bind("<KeyPress-%s>" % char, zelf._pressed)
             zelf.scherm.bind("<KeyRelease-%s>" % char, zelf._released)
             zelf.pressed[char] = False
-            
+
+    def _toggle_volledigscherm(zelf, event):
+        zelf.state = not zelf.state
+        zelf.scherm.attributes("-fullscreen", zelf.state)
+        
     def _click(zelf, event):
         robot = zelf.doek.vind_robot(zelf.robots, event.x, event.y)
         if robot:
@@ -114,9 +123,8 @@ class Raam:
         
     def teken(zelf):
         s = zelf.speler
-        x, y = s.x + (s.grootte_x // 2), s.y - (s.grootte_y // 2)
+        x, y = s.x + (s.grootte_x // 2), s.y + (s.grootte_y // 2)
         s.ververs_snelheid(zelf.pressed)
-        zelf.robots.append(Robot(50,50))
         for i in zelf.robots:
             i.beweeg()
         zelf.hergroepeer()
