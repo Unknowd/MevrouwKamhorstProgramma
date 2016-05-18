@@ -73,7 +73,7 @@ class Doek(tkinter.Canvas):
         return abs(robot.x) > 4 * zelf.breedte or abs(robot.y) > 4 * zelf.hoogte
 
     def vind_robot(zelf, robots, x, y):
-        for robot in robots:
+        for robot in robots[::-1]:
             if robot.x <= x and robot.y >= y and robot.x + robot.grootte_x >= x and robot.y - robot.grootte_y <= y:
                 return robot
         return False
