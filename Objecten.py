@@ -73,7 +73,7 @@ class Doek(tkinter.Canvas):
         if informatieweergeven:
             snelheidstekst = ""
             for robot in robots:
-                snelheidstekst += "\n" + robot.kleur + ": " + str(int(math.sqrt((speler.snelheid_x - robot.snelheid_x)**2 + (speler.snelheid_y - robot.snelheid_y)**2)))
+                snelheidstekst += "\n" + robot.kleur + ": " + str(round(math.sqrt((speler.snelheid_x - robot.snelheid_x)**2 + (speler.snelheid_y - robot.snelheid_y)**2)))
             zelf.create_text(5, 5, text = "Snelheden" + snelheidstekst, fill = "black", font = "-size 30", anchor="nw")
 
     def far_away(zelf, robot, x, y):
@@ -135,7 +135,7 @@ class Raam:
 
     def knopcontroleren(zelf):
         if (zelf.pressed["r"] or zelf.pressed["i"]) and zelf.tijd - 75 > zelf.verbodentijd:
-            if zelf.pressed["r"] and len(zelf.robots) < 7:
+            if zelf.pressed["r"] and len(Robot.kleuren) != 0:
                 zelf.robots.append(Robot(50, 50, snelheid_x=random.randint(-10, 10), snelheid_y=random.randint(-10, 10)))
             if zelf.pressed["i"]:
                 if zelf.informatieweergeven:
@@ -146,7 +146,8 @@ class Raam:
             zelf.verbodentijd = zelf.tijd
         
     def uitvoeren(zelf):
-        zelf.tijd += 20
+        zelf.ververstijd = 20
+        zelf.tijd += zelf.ververstijd
         s = zelf.speler
         x, y = s.x + (s.grootte_x // 2), s.y + (s.grootte_y // 2)
         s.ververs_snelheid(zelf.pressed)
@@ -155,7 +156,7 @@ class Raam:
             i.beweeg()
         zelf.hergroepeer()
         zelf.doek.ververs(zelf.robots, x, y, s, zelf.informatieweergeven)
-        zelf.scherm.after(20, zelf.uitvoeren)
+        zelf.scherm.after(zelf.ververstijd, zelf.uitvoeren)
 
 def main():
     mijn_raam = Raam()
