@@ -31,8 +31,14 @@ class Robot:
         zelf.y += zelf.snelheid_y
         
     def teken(zelf, doek, x, y):
+        if zelf.x - x > doek.breedte: zelf.x -= doek.breedte
+        elif zelf.x - x < 0: zelf.x += doek.breedte
+        if zelf.y - y > doek.hoogte: zelf.y -= doek.hoogte
+        elif zelf.y - y < 0: zelf.y += doek.hoogte
         doek.create_rectangle(zelf.x - x, zelf.y - y , zelf.x + zelf.grootte_x - x, zelf.y + zelf.grootte_y - y, fill = zelf.kleur, outline = zelf.bkleur, width = zelf.grootte_x//10)
-        doek.create_oval(zelf.x - x, zelf.y - y, zelf.x + zelf.grootte_x - x, zelf.y + zelf.grootte_y - y, fill = zelf.kleur, outline = zelf.ckleur, width = zelf.grootte_x//10)
+        doek.create_rectangle(zelf.x - x - doek.breedte, zelf.y - y, zelf.x + zelf.grootte_x - x - doek.breedte, zelf.y + zelf.grootte_y - y, fill = zelf.kleur, outline = zelf.bkleur, width = zelf.grootte_x//10)
+        doek.create_rectangle(zelf.x - x, zelf.y - y - doek.hoogte, zelf.x + zelf.grootte_x - x, zelf.y + zelf.grootte_y - y - doek.hoogte, fill = zelf.kleur, outline = zelf.bkleur, width = zelf.grootte_x//10)
+        doek.create_rectangle(zelf.x - x - doek.breedte, zelf.y - y - doek.hoogte, zelf.x + zelf.grootte_x - x - doek.breedte, zelf.y + zelf.grootte_y - y - doek.hoogte, fill = zelf.kleur, outline = zelf.bkleur, width = zelf.grootte_x//10)
         
 class Speler(Robot):
     def __init__(zelf, robot):
