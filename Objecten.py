@@ -39,7 +39,7 @@ class Robot:
         zelf.x += zelf.snelheid_x
         zelf.y += zelf.snelheid_y
     def teken(zelf, doek, ijkpunt):
-        doek.create_rectangle(zelf.x + ((x / 2) - ijkpunt[0]), -zelf.y + ((y / 2) + ijkpunt[1]), zelf.x + ((x / 2) - ijkpunt[0]) + zelf.grootte_x, -zelf.y + ((y / 2) + ijkpunt[1]) + zelf.grootte_y, fill = zelf.kleur)
+        doek.create_rectangle(zelf.x + ijkpunt[0], -zelf.y + ijkpunt[1], zelf.x + ijkpunt[0] + zelf.grootte_x, -zelf.y + ijkpunt[1] + zelf.grootte_y, fill = zelf.kleur)
 
 class Speler():
     def __init__(zelf, robotid):
@@ -88,7 +88,7 @@ class Raam:
         zelf.doek.delete("all")
         for robot in robots:
             robot.beweeg(zelf)
-        ijkpunt = [speler.x + (speler.grootte_x / 2), speler.y - (speler.grootte_y / 2)]
+        ijkpunt = [(x / 2) - (speler.x + (speler.grootte_x / 2)), (y / 2) + (speler.y - (speler.grootte_y / 2))]
         for robot in robots:
             robot.teken(doek, ijkpunt)
         zelf.doek.after(20, zelf.teken, doek)
