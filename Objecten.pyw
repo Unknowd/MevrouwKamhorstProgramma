@@ -50,7 +50,6 @@ class Robot:
                               zelf.x + zelf.grootte_x - doek.breedte, zelf.y + zelf.grootte_y - doek.hoogte,
                               fill=zelf.kleur, outline=zelf.bkleur, width=zelf.grootte_x // 10)
 
-
 class Speler(Robot):
     def __init__(zelf, robot):
         zelf.__dict__ = robot.__dict__
@@ -85,9 +84,7 @@ class Doek(tkinter.Canvas):
         if informatieweergeven:
             zelf.create_text(5, 0, text = "Snelheden:", fill = "black", font = "-size 30", anchor="nw")
             for robot in robots:
-                snelheidstekst += "\n" + robot.kleur + ": " + str(round(math.sqrt(
-                    (speler.snelheid_x - robot.snelheid_x) ** 2 + (speler.snelheid_y - robot.snelheid_y) ** 2)))
-            zelf.create_text(5, 5, text="Snelheden" + snelheidstekst, fill="black", font="-size 30", anchor="nw")
+                zelf.create_text(5, robot.id*40, text=robot.kleur[0].upper() + robot.kleur[1:] + ": " + str(round(math.sqrt((speler.snelheid_x - robot.snelheid_x) ** 2 + (speler.snelheid_y - robot.snelheid_y) ** 2))), fill=robot.kleur, font="-size 30", anchor="nw")
 
     def far_away(zelf, robot, x, y):
                 zelf.create_text(5, 0 + 40 * robot.id, text = robot.kleur[0].upper() + robot.kleur[1:] + ": " + str(round(math.sqrt((speler.snelheid_x - robot.snelheid_x)**2 + (speler.snelheid_y - robot.snelheid_y)**2))), fill = robot.kleur, font = "-size 30", anchor="nw")
@@ -108,11 +105,8 @@ class Doek(tkinter.Canvas):
                 return robot
         return False
 
-
 class Raam:
     def __init__(zelf):
-        zelf.tijd = 0
-        zelf.verbodentijd = 0
         zelf.informatieweergeven = False
         zelf.pressed = {}
         zelf.scherm = tkinter.Tk()
