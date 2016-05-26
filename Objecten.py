@@ -30,25 +30,25 @@ class Robot:
         zelf.x += zelf.snelheid_x
         zelf.y += zelf.snelheid_y
 
-    def teken(zelf, doek, x, y):
-        if zelf.x - x > doek.breedte:
-            zelf.x -= doek.breedte
-        elif zelf.x - x < 0:
-            zelf.x += doek.breedte
-        if zelf.y - y > doek.hoogte:
-            zelf.y -= doek.hoogte
-        elif zelf.y - y < 0:
-            zelf.y += doek.hoogte
-        doek.create_rectangle(zelf.x - x, zelf.y - y, zelf.x + zelf.grootte_x - x, zelf.y + zelf.grootte_y - y,
+    def teken(zelf, doek):
+        if zelf.x > doek.breedte:
+            zelf.x = 0
+        elif zelf.x < 0:
+            zelf.x = doek.breedte
+        if zelf.y > doek.hoogte:
+            zelf.y = 0
+        elif zelf.y < 0:
+            zelf.y = doek.hoogte
+        doek.create_rectangle(zelf.x, zelf.y, zelf.x + zelf.grootte_x, zelf.y + zelf.grootte_y,
                               fill=zelf.kleur, outline=zelf.bkleur, width=zelf.grootte_x // 10)
-        doek.create_rectangle(zelf.x - x - doek.breedte, zelf.y - y, zelf.x + zelf.grootte_x - x - doek.breedte,
-                              zelf.y + zelf.grootte_y - y, fill=zelf.kleur, outline=zelf.bkleur,
+        doek.create_rectangle(zelf.x - doek.breedte, zelf.y, zelf.x + zelf.grootte_x - doek.breedte,
+                              zelf.y + zelf.grootte_y, fill=zelf.kleur, outline=zelf.bkleur,
                               width=zelf.grootte_x // 10)
-        doek.create_rectangle(zelf.x - x, zelf.y - y - doek.hoogte, zelf.x + zelf.grootte_x - x,
-                              zelf.y + zelf.grootte_y - y - doek.hoogte, fill=zelf.kleur, outline=zelf.bkleur,
+        doek.create_rectangle(zelf.x, zelf.y - doek.hoogte, zelf.x + zelf.grootte_x,
+                              zelf.y + zelf.grootte_y - doek.hoogte, fill=zelf.kleur, outline=zelf.bkleur,
                               width=zelf.grootte_x // 10)
-        doek.create_rectangle(zelf.x - x - doek.breedte, zelf.y - y - doek.hoogte,
-                              zelf.x + zelf.grootte_x - x - doek.breedte, zelf.y + zelf.grootte_y - y - doek.hoogte,
+        doek.create_rectangle(zelf.x - doek.breedte, zelf.y - doek.hoogte,
+                              zelf.x + zelf.grootte_x - doek.breedte, zelf.y + zelf.grootte_y - doek.hoogte,
                               fill=zelf.kleur, outline=zelf.bkleur, width=zelf.grootte_x // 10)
 
 
@@ -79,12 +79,10 @@ class Doek(tkinter.Canvas):
         zelf.hoogte = event.height
         zelf.config(width=zelf.breedte, height=zelf.hoogte)
 
-    def ververs(zelf, robots, x, y, speler, informatieweergeven):
+    def ververs(zelf, robots, speler, informatieweergeven):
         zelf.delete('all')
-        x -= zelf.breedte // 2
-        y -= zelf.hoogte // 2
         for i in robots:
-            i.teken(zelf, x, y)
+            i.teken(zelf)
         if informatieweergeven:
             zelf.create_text(5, 0, text = "Snelheden:", fill = "black", font = "-size 30", anchor="nw")
             for robot in robots:
@@ -96,7 +94,13 @@ class Doek(tkinter.Canvas):
 
     def vind_robot(zelf, robots, x, y):
         for robot in robots[::-1]:
-            if robot.x <= x and robot.y >= y and robot.x + robot.grootte_x >= x and robot.y - robot.grootte_y <= y:
+            if robot.x <= x and robot.y <= y and robot.x + robot.grootte_x >= x and robot.y + robot.grootte_y >= y:
+                return robot
+            if robot.x <= x and robot.y <= y and robot.x + robot.grootte_x >= x and robot.y + robot.grootte_y >= y:
+                return robot
+            if robot.x <= x and robot.y <= y and robot.x + robot.grootte_x >= x and robot.y + robot.grootte_y >= y:
+                return robot
+            if robot.x <= x and robot.y <= y and robot.x + robot.grootte_x >= x and robot.y + robot.grootte_y >= y:
                 return robot
         return False
 
@@ -115,8 +119,6 @@ class Raam:
         zelf.doek = Doek(zelf.scherm, bg="white", highlightthickness=0, border=0)
         zelf.doek.pack(fill=tkinter.BOTH, expand=tkinter.YES)
         zelf.robots = [Robot(random.randint(0, x), random.randint(0, y), snelheid_x=random.randint(-10, 10),
-                             snelheid_y=random.randint(-10, 10)),
-                       Robot(random.randint(0, x), random.randint(0, y), snelheid_x=random.randint(-10, 10),
                              snelheid_y=random.randint(-10, 10)),
                        Robot(random.randint(0, x), random.randint(0, y), snelheid_x=random.randint(-10, 10),
                              snelheid_y=random.randint(-10, 10))]
@@ -158,21 +160,18 @@ class Raam:
         zelf.informatieweergeven = not zelf.informatieweergeven
     
     def hergroepeer(zelf):
-        x, y = zelf.speler.x - zelf.doek.breedte//2 + zelf.speler.grootte_x//2, zelf.speler.y - zelf.doek.hoogte//2 - zelf.speler.grootte_y//2
+        x, y = zelf.speler.x - zelf.doek.breedte//2, zelf.speler.y - zelf.doek.hoogte//2
         for robot in zelf.robots:
             zelf.doek.reposition(robot, x, y)
         
     def uitvoeren(zelf):
         s = zelf.speler
-        x, y = s.x + (s.grootte_x // 2), s.y + (s.grootte_y // 2)
         s.ververs_snelheid(zelf.pressed)
         for i in zelf.robots:
             i.beweeg()
         zelf.hergroepeer()
-        zelf.doek.ververs(zelf.robots, x, y, s, zelf.informatieweergeven)
+        zelf.doek.ververs(zelf.robots, s, zelf.informatieweergeven)
         zelf.scherm.after(20, zelf.uitvoeren)
-
-
 
 def main():
     mijn_raam = Raam()
