@@ -1,6 +1,5 @@
 import tkinter, random, math
 
-
 class Robot:
     # statische variable
     id = 0
@@ -86,6 +85,11 @@ class Doek(tkinter.Canvas):
         if informatieweergeven:
             zelf.create_text(5, 0, text = "Snelheden:", fill = "black", font = "-size 30", anchor="nw")
             for robot in robots:
+                snelheidstekst += "\n" + robot.kleur + ": " + str(round(math.sqrt(
+                    (speler.snelheid_x - robot.snelheid_x) ** 2 + (speler.snelheid_y - robot.snelheid_y) ** 2)))
+            zelf.create_text(5, 5, text="Snelheden" + snelheidstekst, fill="black", font="-size 30", anchor="nw")
+
+    def far_away(zelf, robot, x, y):
                 zelf.create_text(5, 0 + 40 * robot.id, text = robot.kleur[0].upper() + robot.kleur[1:] + ": " + str(round(math.sqrt((speler.snelheid_x - robot.snelheid_x)**2 + (speler.snelheid_y - robot.snelheid_y)**2))), fill = robot.kleur, font = "-size 30", anchor="nw")
                                  
     def reposition(zelf, robot, x, y):
