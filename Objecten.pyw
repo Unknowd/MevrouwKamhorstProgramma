@@ -1,6 +1,5 @@
 import tkinter, random, math
 
-
 class Robot:
     # statische variable
     id = 0
