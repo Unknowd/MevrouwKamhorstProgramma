@@ -107,8 +107,6 @@ class Doek(tkinter.Canvas):
 
 class Raam:
     def __init__(zelf):
-        zelf.tijd = 0
-        zelf.verbodentijd = 0
         zelf.informatieweergeven = False
         zelf.pressed = {}
         zelf.scherm = tkinter.Tk()
