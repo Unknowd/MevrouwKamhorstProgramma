@@ -22,8 +22,12 @@ class Robot:
         zelf.bkleur = bkleur
         if zelf.bkleur not in Robot.kleuren:
             zelf.bkleur = zelf.kleur
-        Robot.id += 1
         zelf.id = Robot.id
+        Robot.id += 1
+
+    def __del__(zelf):
+        print(zelf.kleur)
+        Robot.kleuren.append(zelf.kleur)
 
     def beweeg(zelf):
         zelf.x += zelf.snelheid_x
@@ -84,7 +88,7 @@ class Doek(tkinter.Canvas):
         if informatieweergeven:
             zelf.create_text(5, 0, text = "Snelheden:", fill = "black", font = "-size 30", anchor="nw")
             for robot in robots:
-                zelf.create_text(5, robot.id*40, text=robot.kleur[0].upper() + robot.kleur[1:] + ": " + str(round(math.sqrt((speler.snelheid_x - robot.snelheid_x) ** 2 + (speler.snelheid_y - robot.snelheid_y) ** 2))), fill=robot.kleur, font="-size 30", anchor="nw")
+                zelf.create_text(5, robot.id*40+40, text=robot.kleur[0].upper() + robot.kleur[1:] + ": " + str(round(math.sqrt((speler.snelheid_x - robot.snelheid_x) ** 2 + (speler.snelheid_y - robot.snelheid_y) ** 2))), fill=robot.kleur, font="-size 30", anchor="nw")
 
     def far_away(zelf, robot, x, y):
                 zelf.create_text(5, 0 + 40 * robot.id, text = robot.kleur[0].upper() + robot.kleur[1:] + ": " + str(round(math.sqrt((speler.snelheid_x - robot.snelheid_x)**2 + (speler.snelheid_y - robot.snelheid_y)**2))), fill = robot.kleur, font = "-size 30", anchor="nw")
@@ -127,6 +131,7 @@ class Raam:
 
     def _set_bindings(zelf):
         zelf.scherm.bind("<Button-1>", zelf._leftclick)
+        zelf.scherm.bind("<Button-2>", zelf._scrollclick)
         zelf.scherm.bind("<F11>", zelf._toggle_volledigscherm)
         zelf.scherm.bind("<KeyPress-r>", zelf.maak_nieuwe_robot)
         zelf.scherm.bind("<KeyPress-i>", zelf.toon_info)
@@ -143,6 +148,11 @@ class Raam:
         robot = zelf.doek.vind_robot(zelf.robots, event.x, event.y)
         if robot:
             zelf.speler = Speler(robot)
+
+    def _scrollclick(zelf, event):
+        robot = zelf.doek.vind_robot(zelf.robots, event.x, event.y)
+        if robot and robot.id != zelf.speler.id:
+            del zelf.robots[zelf.robots.index(robot)]
 
     def _pressed(zelf, event):
         zelf.pressed[event.char] = True
