@@ -86,16 +86,21 @@ class Doek(tkinter.Canvas):
         for i in robots:
             i.teken(zelf, x, y)
         if informatieweergeven:
-            snelheidstekst = ""
+            zelf.create_text(5, 0, text = "Snelheden:", fill = "black", font = "-size 30", anchor="nw")
             for robot in robots:
+<<<<<<< HEAD
                 snelheidstekst += "\n" + robot.kleur + ": " + str(round(math.sqrt(
                     (speler.snelheid_x - robot.snelheid_x) ** 2 + (speler.snelheid_y - robot.snelheid_y) ** 2)))
             zelf.create_text(5, 5, text="Snelheden" + snelheidstekst, fill="black", font="-size 30", anchor="nw")
 
     def far_away(zelf, robot, x, y):
+=======
+                zelf.create_text(5, 0 + 40 * robot.id, text = robot.kleur[0].upper() + robot.kleur[1:] + ": " + str(round(math.sqrt((speler.snelheid_x - robot.snelheid_x)**2 + (speler.snelheid_y - robot.snelheid_y)**2))), fill = robot.kleur, font = "-size 30", anchor="nw")
+                                 
+    def reposition(zelf, robot, x, y):
+>>>>>>> refs/remotes/origin/master
         robot.x -= x
         robot.y -= y
-        return abs(robot.x) > 4 * zelf.breedte or abs(robot.y) > 4 * zelf.hoogte
 
     def vind_robot(zelf, robots, x, y):
         for robot in robots[::-1]:
@@ -127,12 +132,17 @@ class Raam:
         zelf.state = False
         zelf._set_bindings()
         zelf.scherm.after(20, zelf.uitvoeren)
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 
     def _set_bindings(zelf):
         zelf.scherm.bind("<Button-1>", zelf._leftclick)
         zelf.scherm.bind("<F11>", zelf._toggle_volledigscherm)
-        for char in ["w", "a", "s", "d", "r", "i"]:
+        zelf.scherm.bind("<KeyPress-r>", zelf.maak_nieuwe_robot)
+        zelf.scherm.bind("<KeyPress-i>", zelf.toon_info)
+        for char in ["w", "a", "s", "d"]:
             zelf.scherm.bind("<KeyPress-%s>" % char, zelf._pressed)
             zelf.scherm.bind("<KeyRelease-%s>" % char, zelf._released)
             zelf.pressed[char] = False
@@ -152,7 +162,15 @@ class Raam:
     def _released(zelf, event):
         zelf.pressed[event.char] = False
 
+    def maak_nieuwe_robot(zelf, event):
+        if len(Robot.kleuren) != 0:
+            zelf.robots.append(Robot(50, 50, snelheid_x=random.randint(-10, 10), snelheid_y=random.randint(-10, 10)))
+
+    def toon_info(zelf, event):
+        zelf.informatieweergeven = not zelf.informatieweergeven
+    
     def hergroepeer(zelf):
+<<<<<<< HEAD
         x, y = zelf.speler.x - zelf.doek.breedte // 2 + zelf.speler.grootte_x // 2, zelf.speler.y - zelf.doek.hoogte // 2 - zelf.speler.grootte_y // 2
         zelf.robots = [robot for robot in zelf.robots if not zelf.doek.far_away(robot, x, y)]
 
@@ -169,25 +187,33 @@ class Raam:
             zelf.tijd = 0
             zelf.verbodentijd = zelf.tijd
 
+=======
+        x, y = zelf.speler.x - zelf.doek.breedte//2 + zelf.speler.grootte_x//2, zelf.speler.y - zelf.doek.hoogte//2 - zelf.speler.grootte_y//2
+        for robot in zelf.robots:
+            zelf.doek.reposition(robot, x, y)
+        
+>>>>>>> refs/remotes/origin/master
     def uitvoeren(zelf):
-        zelf.ververstijd = 20
-        zelf.tijd += zelf.ververstijd
         s = zelf.speler
         x, y = s.x + (s.grootte_x // 2), s.y + (s.grootte_y // 2)
         s.ververs_snelheid(zelf.pressed)
-        zelf.knopcontroleren()
         for i in zelf.robots:
             i.beweeg()
         zelf.hergroepeer()
         zelf.doek.ververs(zelf.robots, x, y, s, zelf.informatieweergeven)
-        zelf.scherm.after(zelf.ververstijd, zelf.uitvoeren)
+        zelf.scherm.after(20, zelf.uitvoeren)
+
+
 
 
 
 def main():
     mijn_raam = Raam()
     mijn_raam.scherm.mainloop()
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 if __name__ == "__main__":
     main()
