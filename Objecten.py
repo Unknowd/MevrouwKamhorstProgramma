@@ -96,7 +96,7 @@ class Doek(tkinter.Canvas):
         for robot in robots[::-1]:
             if robot.x <= x and robot.y <= y and robot.x + robot.grootte_x >= x and robot.y + robot.grootte_y >= y:
                 return robot
-            if robot.x <= x and robot.y <= y and robot.x + robot.grootte_x >= x and robot.y + robot.grootte_y >= y:
+            if robot.x - self.breedte <= x and robot.y <= y and robot.x + robot.grootte_x - self.breedte >= x and robot.y + robot.grootte_y >= y:
                 return robot
             if robot.x <= x and robot.y <= y and robot.x + robot.grootte_x >= x and robot.y + robot.grootte_y >= y:
                 return robot
