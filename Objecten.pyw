@@ -1,13 +1,18 @@
 import tkinter, random, math
 
 class Robot:
+    
     # statische variable
     id = 0
     kracht = 2500
     kleuren = ["black", "red", "green", "blue", "cyan", "yellow", "magenta"]
 
-    def __init__(zelf, x=0, y=0, kleur="black", bkleur="black", snelheid_x=random.randint(-10, 10),
-                 snelheid_y=random.randint(-10, 10), grootte_x=50, grootte_y=50):
+    def __init__(zelf, x=0, y=0, kleur="black", snelheid_x=None,
+                 snelheid_y=None, grootte_x=50, grootte_y=50):
+        if snelheid_x == None:
+            snelheid_x = random.randint(-5, 5)
+        if snelheid_y == None:
+            snelheid_y = random.randint(-5, 5)
         zelf.x = x
         zelf.y = y
         zelf.snelheid_x = snelheid_x
@@ -19,14 +24,10 @@ class Robot:
         if zelf.kleur not in Robot.kleuren:
             zelf.kleur = Robot.kleuren[random.randint(0, len(Robot.kleuren) - 1)]
         Robot.kleuren.remove(zelf.kleur)
-        zelf.bkleur = bkleur
-        if zelf.bkleur not in Robot.kleuren:
-            zelf.bkleur = zelf.kleur
         zelf.id = Robot.id
         Robot.id += 1
 
     def __del__(zelf):
-        print(zelf.kleur)
         Robot.kleuren.append(zelf.kleur)
 
     def beweeg(zelf):
@@ -43,18 +44,17 @@ class Robot:
         elif zelf.y < 0:
             zelf.y = doek.hoogte
         doek.create_rectangle(zelf.x, zelf.y, zelf.x + zelf.grootte_x, zelf.y + zelf.grootte_y,
-                              fill=zelf.kleur, outline=zelf.bkleur, width=zelf.grootte_x // 10)
+                              fill=zelf.kleur, outline=zelf.kleur)
         doek.create_rectangle(zelf.x - doek.breedte, zelf.y, zelf.x + zelf.grootte_x - doek.breedte,
-                              zelf.y + zelf.grootte_y, fill=zelf.kleur, outline=zelf.bkleur,
-                              width=zelf.grootte_x // 10)
+                              zelf.y + zelf.grootte_y, fill=zelf.kleur, outline=zelf.kleur)
         doek.create_rectangle(zelf.x, zelf.y - doek.hoogte, zelf.x + zelf.grootte_x,
-                              zelf.y + zelf.grootte_y - doek.hoogte, fill=zelf.kleur, outline=zelf.bkleur,
-                              width=zelf.grootte_x // 10)
+                              zelf.y + zelf.grootte_y - doek.hoogte, fill=zelf.kleur, outline=zelf.kleur)
         doek.create_rectangle(zelf.x - doek.breedte, zelf.y - doek.hoogte,
                               zelf.x + zelf.grootte_x - doek.breedte, zelf.y + zelf.grootte_y - doek.hoogte,
-                              fill=zelf.kleur, outline=zelf.bkleur, width=zelf.grootte_x // 10)
+                              fill=zelf.kleur, outline=zelf.kleur)
 
 class Speler(Robot):
+    
     def __init__(zelf, robot):
         zelf.__dict__ = robot.__dict__
 
@@ -119,10 +119,8 @@ class Raam:
         zelf.scherm.geometry("{0}x{1}+{2}+{3}".format(x, y, x - x // 2, y - y // 2))
         zelf.doek = Doek(zelf.scherm, bg="white", highlightthickness=0, border=0)
         zelf.doek.pack(fill=tkinter.BOTH, expand=tkinter.YES)
-        zelf.robots = [Robot(random.randint(0, x), random.randint(0, y), snelheid_x=random.randint(-10, 10),
-                             snelheid_y=random.randint(-10, 10)),
-                       Robot(random.randint(0, x), random.randint(0, y), snelheid_x=random.randint(-10, 10),
-                             snelheid_y=random.randint(-10, 10))]
+        zelf.robots = [Robot(random.randint(0, x), random.randint(0, y)),
+                       Robot(random.randint(0, x), random.randint(0, y))]
         zelf.speler = Speler(zelf.robots[0])
         zelf.state = False
         zelf._set_bindings()
@@ -161,7 +159,7 @@ class Raam:
 
     def maak_nieuwe_robot(zelf, event):
         if len(Robot.kleuren) != 0:
-            zelf.robots.append(Robot(50, 50, snelheid_x=random.randint(-10, 10), snelheid_y=random.randint(-10, 10)))
+            zelf.robots.append(Robot(random.randint(0, zelf.doek.breedte), random.randint(0, zelf.doek.hoogte)))
 
     def toon_info(zelf, event):
         zelf.informatieweergeven = not zelf.informatieweergeven
