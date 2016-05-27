@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import tkinter, random, math
 
 class Robot:
@@ -19,6 +20,7 @@ class Robot:
         zelf.snelheid_y = snelheid_y
         zelf.grootte_x = grootte_x
         zelf.grootte_y = grootte_y
+        zelf.toon_snelheid = False
         zelf.snelheidsverandering = Robot.kracht / (zelf.grootte_x * zelf.grootte_y)
         zelf.kleur = kleur
         if zelf.kleur not in Robot.kleuren:
@@ -29,12 +31,12 @@ class Robot:
 
     def __del__(zelf):
         Robot.kleuren.append(zelf.kleur)
-
+    
     def beweeg(zelf):
         zelf.x += zelf.snelheid_x
         zelf.y += zelf.snelheid_y
 
-    def teken(zelf, doek):
+    def teken(zelf, doek, speler):
         if zelf.x > doek.breedte:
             zelf.x = 0
         elif zelf.x < 0:
@@ -52,6 +54,9 @@ class Robot:
         doek.create_rectangle(zelf.x - doek.breedte, zelf.y - doek.hoogte,
                               zelf.x + zelf.grootte_x - doek.breedte, zelf.y + zelf.grootte_y - doek.hoogte,
                               fill=zelf.kleur, outline=zelf.kleur)
+        if zelf.toon_snelheid:
+            doek.create_text(zelf.x, zelf.y, fill=zelf.kleur, text=format(math.sqrt((speler.snelheid_x - zelf.snelheid_x) ** 2 + (speler.snelheid_y - zelf.snelheid_y) ** 2), '.2f'), font='-size 20', anchor="sw")
+            doek.create_text(zelf.x - doek.breedte, zelf.y, fill=zelf.kleur, text=format(math.sqrt((speler.snelheid_x - zelf.snelheid_x) ** 2 + (speler.snelheid_y - zelf.snelheid_y) ** 2), '.2f'), font='-size 20', anchor="sw")
 
 class Speler(Robot):
     
@@ -84,7 +89,7 @@ class Doek(tkinter.Canvas):
     def ververs(zelf, robots, speler, informatieweergeven):
         zelf.delete('all')
         for i in robots:
-            i.teken(zelf)
+            i.teken(zelf, speler)
         if informatieweergeven:
             zelf.create_text(5, 0, text = "Snelheden:", fill = "black", font = "-size 30", anchor="nw")
             positieteller = 0
@@ -129,6 +134,7 @@ class Raam:
     def _set_bindings(zelf):
         zelf.scherm.bind("<Button-1>", zelf._leftclick)
         zelf.scherm.bind("<Button-2>", zelf._scrollclick)
+        zelf.scherm.bind("<Button-3>", zelf._rightclick)
         zelf.scherm.bind("<F11>", zelf._toggle_volledigscherm)
         zelf.scherm.bind("<KeyPress-r>", zelf.maak_nieuwe_robot)
         zelf.scherm.bind("<KeyPress-i>", zelf.toon_info)
@@ -151,6 +157,11 @@ class Raam:
         if robot and robot.id != zelf.speler.id:
             del zelf.robots[zelf.robots.index(robot)]
 
+    def _rightclick(zelf, event):
+        robot = zelf.doek.vind_robot(zelf.robots, event.x, event.y)
+        if robot:
+            robot.toon_snelheid = not robot.toon_snelheid
+        
     def _pressed(zelf, event):
         zelf.pressed[event.char] = True
 
