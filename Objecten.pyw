@@ -86,9 +86,6 @@ class Doek(tkinter.Canvas):
             for robot in robots:
                 zelf.create_text(5, robot.id*40, text=robot.kleur[0].upper() + robot.kleur[1:] + ": " + str(round(math.sqrt((speler.snelheid_x - robot.snelheid_x) ** 2 + (speler.snelheid_y - robot.snelheid_y) ** 2))), fill=robot.kleur, font="-size 30", anchor="nw")
 
-    def far_away(zelf, robot, x, y):
-                zelf.create_text(5, 0 + 40 * robot.id, text = robot.kleur[0].upper() + robot.kleur[1:] + ": " + str(round(math.sqrt((speler.snelheid_x - robot.snelheid_x)**2 + (speler.snelheid_y - robot.snelheid_y)**2))), fill = robot.kleur, font = "-size 30", anchor="nw")
-                                 
     def reposition(zelf, robot, x, y):
         robot.x -= x
         robot.y -= y
