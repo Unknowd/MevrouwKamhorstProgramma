@@ -10,9 +10,9 @@ class Robot:
     def __init__(zelf, x=0, y=0, kleur="black", snelheid_x=None,
                  snelheid_y=None, grootte_x=50, grootte_y=50):
         if snelheid_x == None:
-            snelheid_x = random.randint(-5, 5)
+            snelheid_x = random.random()*4-2
         if snelheid_y == None:
-            snelheid_y = random.randint(-5, 5)
+            snelheid_y = random.random()*4-2
         zelf.x = x
         zelf.y = y
         zelf.snelheid_x = snelheid_x
@@ -89,7 +89,7 @@ class Doek(tkinter.Canvas):
             zelf.create_text(5, 0, text = "Snelheden:", fill = "black", font = "-size 30", anchor="nw")
             positieteller = 0
             for robot in robots:
-                zelf.create_text(5, positieteller*40+40, text=robot.kleur[0].upper() + robot.kleur[1:] + ": " + str(round(math.sqrt((speler.snelheid_x - robot.snelheid_x) ** 2 + (speler.snelheid_y - robot.snelheid_y) ** 2))), fill=robot.kleur, font="-size 30", anchor="nw")
+                zelf.create_text(5, positieteller*40+40, text=robot.kleur[0].upper() + robot.kleur[1:] + ": " + format(math.sqrt((speler.snelheid_x - robot.snelheid_x) ** 2 + (speler.snelheid_y - robot.snelheid_y) ** 2), '.2f'), fill=robot.kleur, font="-size 30", anchor="nw")
                 positieteller += 1
 
     def reposition(zelf, robot, x, y):
