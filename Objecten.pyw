@@ -18,7 +18,7 @@ class Robot:
         zelf.kleur = kleur
         if zelf.kleur not in Robot.kleuren:
             zelf.kleur = Robot.kleuren[random.randint(0, len(Robot.kleuren) - 1)]
-        del Robot.kleuren[Robot.kleuren.index(zelf.kleur)]
+        Robot.kleuren.remove(zelf.kleur)
         zelf.bkleur = bkleur
         if zelf.bkleur not in Robot.kleuren:
             zelf.bkleur = zelf.kleur
