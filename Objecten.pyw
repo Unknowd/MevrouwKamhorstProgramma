@@ -2,10 +2,10 @@
 import tkinter, random, math
 
 class Robot:
-    
     # statische variable
-    id = 0
     kracht = 2500
+    
+    id = 0
     kleuren = {"black", "red", "green", "blue", "cyan", "yellow", "magenta"}
 
     def __init__(zelf, x=0, y=0, kleur="black", snelheid_x=None,
