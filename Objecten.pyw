@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import tkinter, random, math
 
 __author__ = "Pim and Sven"
