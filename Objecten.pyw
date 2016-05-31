@@ -1,12 +1,32 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import tkinter, random, math
 
+__author__ = "Pim and Sven"
+__status__ = "Development"
+__maintainer__ = "Pim and Sven"
+__credits__ = ["Pim", "Sven", "Pieter Schutz"]
+__copyright__ = "Copyright 2016, Pim and Sven"
+__license__ = "GNU GPL"
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 class Robot:
-    
     # statische variable
-    id = 0
     kracht = 2500
-    kleuren = ["black", "red", "green", "blue", "cyan", "yellow", "magenta"]
+    
+    id = 0
+    kleuren = {"black", "red", "green", "blue", "cyan", "yellow", "magenta"}
 
     def __init__(zelf, x=0, y=0, kleur="black", snelheid_x=None,
                  snelheid_y=None, grootte_x=50, grootte_y=50):
@@ -24,13 +44,14 @@ class Robot:
         zelf.snelheidsverandering = Robot.kracht / (zelf.grootte_x * zelf.grootte_y)
         zelf.kleur = kleur
         if zelf.kleur not in Robot.kleuren:
-            zelf.kleur = Robot.kleuren[random.randint(0, len(Robot.kleuren) - 1)]
-        Robot.kleuren.remove(zelf.kleur)
+            zelf.kleur = Robot.kleuren.pop()
+        else:
+            Robot.kleuren.remove(zelf.kleur)
         zelf.id = Robot.id
         Robot.id += 1
 
     def __del__(zelf):
-        Robot.kleuren.append(zelf.kleur)
+        Robot.kleuren.add(zelf.kleur)
     
     def beweeg(zelf):
         zelf.x += zelf.snelheid_x
@@ -169,7 +190,7 @@ class Raam:
         zelf.pressed[event.char] = False
 
     def maak_nieuwe_robot(zelf, event):
-        if len(Robot.kleuren) != 0:
+        if len(Robot.kleuren) is not 0:
             zelf.robots.append(Robot(random.randint(0, zelf.doek.breedte), random.randint(0, zelf.doek.hoogte)))
 
     def toon_info(zelf, event):
