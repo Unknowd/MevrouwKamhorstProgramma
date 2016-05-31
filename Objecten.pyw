@@ -1,39 +1,42 @@
+#!/usr/bin/python
 import tkinter, random, math
 
 class Robot:
+    
     # statische variable
     id = 0
     kracht = 2500
     kleuren = ["black", "red", "green", "blue", "cyan", "yellow", "magenta"]
 
-    def __init__(zelf, x=0, y=0, kleur="black", bkleur="black", snelheid_x=random.randint(-10, 10),
-                 snelheid_y=random.randint(-10, 10), grootte_x=50, grootte_y=50):
+    def __init__(zelf, x=0, y=0, kleur="black", snelheid_x=None,
+                 snelheid_y=None, grootte_x=50, grootte_y=50):
+        if snelheid_x == None:
+            snelheid_x = random.random()*4-2
+        if snelheid_y == None:
+            snelheid_y = random.random()*4-2
         zelf.x = x
         zelf.y = y
         zelf.snelheid_x = snelheid_x
         zelf.snelheid_y = snelheid_y
         zelf.grootte_x = grootte_x
         zelf.grootte_y = grootte_y
+        zelf.toon_snelheid = False
         zelf.snelheidsverandering = Robot.kracht / (zelf.grootte_x * zelf.grootte_y)
         zelf.kleur = kleur
         if zelf.kleur not in Robot.kleuren:
             zelf.kleur = Robot.kleuren[random.randint(0, len(Robot.kleuren) - 1)]
-        del Robot.kleuren[Robot.kleuren.index(zelf.kleur)]
-        zelf.bkleur = bkleur
-        if zelf.bkleur not in Robot.kleuren:
-            zelf.bkleur = zelf.kleur
+        Robot.kleuren.remove(zelf.kleur)
         zelf.id = Robot.id
         Robot.id += 1
 
     def __del__(zelf):
-        print(zelf.kleur)
         Robot.kleuren.append(zelf.kleur)
-
+    
     def beweeg(zelf):
         zelf.x += zelf.snelheid_x
         zelf.y += zelf.snelheid_y
 
-    def teken(zelf, doek):
+    def teken(zelf, doek, speler):
         if zelf.x > doek.breedte:
             zelf.x = 0
         elif zelf.x < 0:
@@ -43,18 +46,20 @@ class Robot:
         elif zelf.y < 0:
             zelf.y = doek.hoogte
         doek.create_rectangle(zelf.x, zelf.y, zelf.x + zelf.grootte_x, zelf.y + zelf.grootte_y,
-                              fill=zelf.kleur, outline=zelf.bkleur, width=zelf.grootte_x // 10)
+                              fill=zelf.kleur, outline=zelf.kleur)
         doek.create_rectangle(zelf.x - doek.breedte, zelf.y, zelf.x + zelf.grootte_x - doek.breedte,
-                              zelf.y + zelf.grootte_y, fill=zelf.kleur, outline=zelf.bkleur,
-                              width=zelf.grootte_x // 10)
+                              zelf.y + zelf.grootte_y, fill=zelf.kleur, outline=zelf.kleur)
         doek.create_rectangle(zelf.x, zelf.y - doek.hoogte, zelf.x + zelf.grootte_x,
-                              zelf.y + zelf.grootte_y - doek.hoogte, fill=zelf.kleur, outline=zelf.bkleur,
-                              width=zelf.grootte_x // 10)
+                              zelf.y + zelf.grootte_y - doek.hoogte, fill=zelf.kleur, outline=zelf.kleur)
         doek.create_rectangle(zelf.x - doek.breedte, zelf.y - doek.hoogte,
                               zelf.x + zelf.grootte_x - doek.breedte, zelf.y + zelf.grootte_y - doek.hoogte,
-                              fill=zelf.kleur, outline=zelf.bkleur, width=zelf.grootte_x // 10)
+                              fill=zelf.kleur, outline=zelf.kleur)
+        if zelf.toon_snelheid:
+            doek.create_text(zelf.x, zelf.y, fill=zelf.kleur, text=format(math.sqrt((speler.snelheid_x - zelf.snelheid_x) ** 2 + (speler.snelheid_y - zelf.snelheid_y) ** 2), '.2f'), font='-size 20', anchor="sw")
+            doek.create_text(zelf.x - doek.breedte, zelf.y, fill=zelf.kleur, text=format(math.sqrt((speler.snelheid_x - zelf.snelheid_x) ** 2 + (speler.snelheid_y - zelf.snelheid_y) ** 2), '.2f'), font='-size 20', anchor="sw")
 
 class Speler(Robot):
+    
     def __init__(zelf, robot):
         zelf.__dict__ = robot.__dict__
 
@@ -84,17 +89,14 @@ class Doek(tkinter.Canvas):
     def ververs(zelf, robots, speler, informatieweergeven):
         zelf.delete('all')
         for i in robots:
-            i.teken(zelf)
+            i.teken(zelf, speler)
         if informatieweergeven:
             zelf.create_text(5, 0, text = "Snelheden:", fill = "black", font = "-size 30", anchor="nw")
             positieteller = 0
             for robot in robots:
-                zelf.create_text(5, positieteller*40+40, text=robot.kleur[0].upper() + robot.kleur[1:] + ": " + str(round(math.sqrt((speler.snelheid_x - robot.snelheid_x) ** 2 + (speler.snelheid_y - robot.snelheid_y) ** 2))), fill=robot.kleur, font="-size 30", anchor="nw")
+                zelf.create_text(5, positieteller*40+40, text=robot.kleur[0].upper() + robot.kleur[1:] + ": " + format(math.sqrt((speler.snelheid_x - robot.snelheid_x) ** 2 + (speler.snelheid_y - robot.snelheid_y) ** 2), '.2f'), fill=robot.kleur, font="-size 30", anchor="nw")
                 positieteller += 1
 
-    def far_away(zelf, robot, x, y):
-                zelf.create_text(5, 0 + 40 * robot.id, text = robot.kleur[0].upper() + robot.kleur[1:] + ": " + str(round(math.sqrt((speler.snelheid_x - robot.snelheid_x)**2 + (speler.snelheid_y - robot.snelheid_y)**2))), fill = robot.kleur, font = "-size 30", anchor="nw")
-                                 
     def reposition(zelf, robot, x, y):
         robot.x -= x
         robot.y -= y
@@ -122,10 +124,8 @@ class Raam:
         zelf.scherm.geometry("{0}x{1}+{2}+{3}".format(x, y, x - x // 2, y - y // 2))
         zelf.doek = Doek(zelf.scherm, bg="white", highlightthickness=0, border=0)
         zelf.doek.pack(fill=tkinter.BOTH, expand=tkinter.YES)
-        zelf.robots = [Robot(random.randint(0, x), random.randint(0, y), snelheid_x=random.randint(-10, 10),
-                             snelheid_y=random.randint(-10, 10)),
-                       Robot(random.randint(0, x), random.randint(0, y), snelheid_x=random.randint(-10, 10),
-                             snelheid_y=random.randint(-10, 10))]
+        zelf.robots = [Robot(random.randint(0, x), random.randint(0, y)),
+                       Robot(random.randint(0, x), random.randint(0, y))]
         zelf.speler = Speler(zelf.robots[0])
         zelf.state = False
         zelf._set_bindings()
@@ -134,6 +134,7 @@ class Raam:
     def _set_bindings(zelf):
         zelf.scherm.bind("<Button-1>", zelf._leftclick)
         zelf.scherm.bind("<Button-2>", zelf._scrollclick)
+        zelf.scherm.bind("<Button-3>", zelf._rightclick)
         zelf.scherm.bind("<F11>", zelf._toggle_volledigscherm)
         zelf.scherm.bind("<KeyPress-r>", zelf.maak_nieuwe_robot)
         zelf.scherm.bind("<KeyPress-i>", zelf.toon_info)
@@ -156,6 +157,11 @@ class Raam:
         if robot and robot.id != zelf.speler.id:
             del zelf.robots[zelf.robots.index(robot)]
 
+    def _rightclick(zelf, event):
+        robot = zelf.doek.vind_robot(zelf.robots, event.x, event.y)
+        if robot:
+            robot.toon_snelheid = not robot.toon_snelheid
+        
     def _pressed(zelf, event):
         zelf.pressed[event.char] = True
 
@@ -164,7 +170,7 @@ class Raam:
 
     def maak_nieuwe_robot(zelf, event):
         if len(Robot.kleuren) != 0:
-            zelf.robots.append(Robot(50, 50, snelheid_x=random.randint(-10, 10), snelheid_y=random.randint(-10, 10)))
+            zelf.robots.append(Robot(random.randint(0, zelf.doek.breedte), random.randint(0, zelf.doek.hoogte)))
 
     def toon_info(zelf, event):
         zelf.informatieweergeven = not zelf.informatieweergeven
