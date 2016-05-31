@@ -6,7 +6,7 @@ class Robot:
     # statische variable
     id = 0
     kracht = 2500
-    kleuren = ["black", "red", "green", "blue", "cyan", "yellow", "magenta"]
+    kleuren = {"black", "red", "green", "blue", "cyan", "yellow", "magenta"}
 
     def __init__(zelf, x=0, y=0, kleur="black", snelheid_x=None,
                  snelheid_y=None, grootte_x=50, grootte_y=50):
@@ -24,13 +24,14 @@ class Robot:
         zelf.snelheidsverandering = Robot.kracht / (zelf.grootte_x * zelf.grootte_y)
         zelf.kleur = kleur
         if zelf.kleur not in Robot.kleuren:
-            zelf.kleur = Robot.kleuren[random.randint(0, len(Robot.kleuren) - 1)]
-        Robot.kleuren.remove(zelf.kleur)
+            zelf.kleur = Robot.kleuren.pop()
+        else:
+            Robot.kleuren.remove(zelf.kleur)
         zelf.id = Robot.id
         Robot.id += 1
 
     def __del__(zelf):
-        Robot.kleuren.append(zelf.kleur)
+        Robot.kleuren.add(zelf.kleur)
     
     def beweeg(zelf):
         zelf.x += zelf.snelheid_x
@@ -169,7 +170,7 @@ class Raam:
         zelf.pressed[event.char] = False
 
     def maak_nieuwe_robot(zelf, event):
-        if len(Robot.kleuren) != 0:
+        if len(Robot.kleuren) is not 0:
             zelf.robots.append(Robot(random.randint(0, zelf.doek.breedte), random.randint(0, zelf.doek.hoogte)))
 
     def toon_info(zelf, event):
