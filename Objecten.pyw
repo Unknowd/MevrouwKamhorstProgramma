@@ -8,7 +8,7 @@ class Robot:
     kracht = 2500
     kleuren = ["black", "red", "green", "blue", "cyan", "yellow", "magenta"]
 
-    def __init__(zelf, x=0, y=0, kleur="black", snelheid_x=None,
+    def __init__(zelf, x=0, y=0, kleur="", snelheid_x=None,
                  snelheid_y=None, grootte_x=50, grootte_y=50):
         if snelheid_x == None:
             snelheid_x = random.random()*4-2
@@ -57,11 +57,6 @@ class Robot:
         if zelf.toon_snelheid:
             doek.create_text(zelf.x, zelf.y, fill=zelf.kleur, text=format(math.sqrt((speler.snelheid_x - zelf.snelheid_x) ** 2 + (speler.snelheid_y - zelf.snelheid_y) ** 2), '.2f'), font='-size 20', anchor="sw")
             doek.create_text(zelf.x - doek.breedte, zelf.y, fill=zelf.kleur, text=format(math.sqrt((speler.snelheid_x - zelf.snelheid_x) ** 2 + (speler.snelheid_y - zelf.snelheid_y) ** 2), '.2f'), font='-size 20', anchor="sw")
-
-class Speler(Robot):
-    
-    def __init__(zelf, robot):
-        zelf.__dict__ = robot.__dict__
 
     def ververs_snelheid(zelf, l):
         if l["d"]:
@@ -126,7 +121,7 @@ class Raam:
         zelf.doek.pack(fill=tkinter.BOTH, expand=tkinter.YES)
         zelf.robots = [Robot(random.randint(0, x), random.randint(0, y)),
                        Robot(random.randint(0, x), random.randint(0, y))]
-        zelf.speler = Speler(zelf.robots[0])
+        zelf.speler = zelf.robots[0]
         zelf.state = False
         zelf._set_bindings()
         zelf.scherm.after(20, zelf.uitvoeren)
@@ -150,7 +145,7 @@ class Raam:
     def _leftclick(zelf, event):
         robot = zelf.doek.vind_robot(zelf.robots, event.x, event.y)
         if robot:
-            zelf.speler = Speler(robot)
+            zelf.speler = robot
 
     def _scrollclick(zelf, event):
         robot = zelf.doek.vind_robot(zelf.robots, event.x, event.y)
