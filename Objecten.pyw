@@ -110,7 +110,8 @@ class Doek(tkinter.Canvas):
             zelf.create_text(5, 0, text = "Snelheden:", fill = "black", font = "-size 30", anchor="nw")
             positieteller = 0
             for robot in robots:
-                zelf.create_text(5, positieteller*40+40, text=robot.kleur[0].upper() + robot.kleur[1:] + ": " + format(math.sqrt((speler.snelheid_x - robot.snelheid_x) ** 2 + (speler.snelheid_y - robot.snelheid_y) ** 2), '.2f'), fill=robot.kleur, font="-size 30", anchor="nw")
+                vertaling = {"black":"zwart", "red":"rood", "green":"groen", "blue":"blauw", "cyan":"cyaan", "yellow":"geel", "magenta":"magenta"}
+                zelf.create_text(5, positieteller*40+40, text=vertaling[robot.kleur][0].upper() + vertaling[robot.kleur][1:] + ": " + format(math.sqrt((speler.snelheid_x - robot.snelheid_x) ** 2 + (speler.snelheid_y - robot.snelheid_y) ** 2), '.2f').replace('.', ','), fill=robot.kleur, font="-size 30", anchor="nw")
                 positieteller += 1
 
     def reposition(zelf, robot, x, y):
